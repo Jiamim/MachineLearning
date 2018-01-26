@@ -1,7 +1,7 @@
 # -*- coding：utf-8 -*-
 
 """
-@version: ??
+@version: python3.6
 @author: Yang
 @contact: 376856746@qq.com
 @file: KNN.py
