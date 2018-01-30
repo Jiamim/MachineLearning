@@ -110,7 +110,8 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
             # 预测值与真实值对比，计算误差Ei
             Ei = fXi - float(labelMat[i])
 
-            # 约束条件 (KKT条件是解决最优化问题的时用到的一种方法。我们这里提到的最优化问题通常是指对于给定的某一函数，求其在指定作用域上的全局最小值)
+            # 约束条件 (KKT条件是解决最优化问题的时用到的一种方法。这里提到的最优化问题通常是指对于给定的某一函数，
+            # 求其在指定作用域上的全局最小值)
             # 0<=alphas[i]<=C，但由于0和C是边界值，我们无法进行优化，因为需要增加一个alphas和降低一个alphas。
             # 表示发生错误的概率：labelMat[i]*Ei 如果超出了 toler， 才需要优化。至于正负号，我们考虑绝对值就对了。
             '''
@@ -149,9 +150,9 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
                 # 参考下面网址
                 # http://www.cnblogs.com/jerrylead/archive/2011/03/18/1988419.html
                 eta = 2.0 * dataMatrix[i, :] * dataMatrix[j, :].T - dataMatrix[i, :] * dataMatrix[i,
-                                                                                           :].T - dataMatrix[j,
-                                                                                                  :] * dataMatrix[j,
-                                                                                                       :].T
+                                                                                       :].T - dataMatrix[j,
+                                                                                              :] * dataMatrix[j,
+                                                                                                   :].T
                 if eta >= 0:
                     print("eta>=0")
                     continue
@@ -170,10 +171,10 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
                 # w= Σ[1~n] ai*yi*xi => b = yj- Σ[1~n] ai*yi(xi*xj)
                 # 所以：  b1 - b = (y1-y) - Σ[1~n] yi*(a1-a)*(xi*x1)
                 # 为什么减2遍？ 因为是 减去Σ[1~n]，正好2个变量i和j，所以减2遍
-                b1 = b - Ei - labelMat[i] * (alphas[i] - alphaIold) * dataMatrix[i, :] * dataMatrix[i, :].T - \
-                    labelMat[j] * (alphas[j] - alphaJold) * dataMatrix[i, :] * dataMatrix[j, :].T
+                b1 = b - Ei - labelMat[i] * (alphas[i] - alphaIold) * dataMatrix[i, :] * dataMatrix[i, :].T -\
+                     labelMat[j] * (alphas[j] - alphaJold) * dataMatrix[i, :] * dataMatrix[j, :].T
                 b2 = b - Ej - labelMat[i] * (alphas[i] - alphaIold) * dataMatrix[i, :] * dataMatrix[j, :].T - \
-                    labelMat[j] * (alphas[j] - alphaJold) * dataMatrix[j, :] * dataMatrix[j, :].T
+                     labelMat[j] * (alphas[j] - alphaJold) * dataMatrix[j, :] * dataMatrix[j, :].T
                 if (0 < alphas[i]) and (C > alphas[i]):
                     b = b1
                 elif (0 < alphas[j]) and (C > alphas[j]):
@@ -194,7 +195,7 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
 
 def calcWs(alphas, dataArr, classLabels):
     """
-    基于alpha计算w值
+    基于alpha计算w值，根据拉格朗日乘子法，w=Σ[1~n]  ai*yi*xi
     Args:
         alphas        拉格朗日乘子
         dataArr       feature数据集
@@ -250,7 +251,6 @@ def plotfig_SVM(xMat, yMat, ws, b, alphas):
     plt.show()
 
 
-
 if __name__ == "__main__":
     # 获取特征和目标变量
     dataArr, labelArr = loadDataSet('../../input/6.SVM/testSet.txt')
@@ -258,10 +258,10 @@ if __name__ == "__main__":
 
     # b是常量值， alphas是拉格朗日乘子
     b, alphas = smoSimple(dataArr, labelArr, 0.6, 0.001, 40)
-    print ('/n/n/n')
-    print ('b=', b)
-    print ('alphas[alphas>0]=', alphas[alphas > 0])
-    print ('shape(alphas[alphas > 0])=', shape(alphas[alphas > 0]))
+    print('/n/n/n')
+    print('b=', b)
+    print('alphas[alphas>0]=', alphas[alphas > 0])
+    print('shape(alphas[alphas > 0])=', shape(alphas[alphas > 0]))
     for i in range(100):
         if alphas[i] > 0:
             print(dataArr[i], labelArr[i])
